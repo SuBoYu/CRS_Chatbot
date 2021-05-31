@@ -37,7 +37,7 @@ def cuda_(var):
 
 def main(epoch):
     parser = argparse.ArgumentParser(description="Run conversational recommendation.")
-    parser.add_argument('-mt', type=int, dest='mt', help='MAX_TURN', default=15)
+    parser.add_argument('-mt', type=int, dest='mt', help='MAX_TURN', default=5)
     parser.add_argument('-playby', type=str, dest='playby', help='playby', default='policy')
     # options include:
     # AO: (Ask Only and recommend by probability)

@@ -94,7 +94,7 @@ class user():
             # h, H
             elif user_response == "h" or user_response == 'H':
                 data = dict()
-                data['ranking'] = input_message.data['rec_list'].index(self.busi_id) + 1
+                # data['ranking'] = input_message.data['rec_list'].index(self.busi_id) + 1
                 data['total'] = len(input_message.data['rec_list'])
                 new_message = message(cfg.USER, cfg.AGENT, cfg.ACCEPT_REC, data)
 

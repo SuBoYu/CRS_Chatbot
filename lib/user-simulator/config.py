@@ -81,7 +81,7 @@ class _Config():
         self.FACET_POOL = list(self.tag_map.keys())
         print('Total feature length is: {}, Top 30 namely: {}'.format(len(self.FACET_POOL), self.FACET_POOL[: 30]))
         self.REC_NUM = 10
-        self.MAX_TURN = 15
+        self.MAX_TURN = 5
         self.play_by = None
         self.calculate_all = None
 

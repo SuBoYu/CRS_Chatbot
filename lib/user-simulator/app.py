@@ -140,11 +140,10 @@ def reply(event):
 
             if k[0] == "D": # ask entity
                 # "Do you like" + str(self.agent_utterance.data['facet']) + "?"
-                # k = k[1:]
-                # question_id = tq_map[k]
-                # question = qid_map[str(question_id)]
-                # k = question + " " + k + "?"
-                print("chatmodel_dict", chatmodel_dict)
+                k = k[1:]
+                question_id = tq_map[k]
+                question = qid_map[str(question_id)]
+                k = question + " " + k + "?"
                 print(k)
                 Confirm_template = TemplateSendMessage(
                     alt_text='confirm template請使用手機版line',
@@ -197,11 +196,10 @@ def reply(event):
 
             if k[0] == "D": # ask entity
                 # "Do you like" + str(self.agent_utterance.data['facet']) + "?"
-                # k = k[1:]
-                # question_id = tq_map[k]
-                # question = qid_map[str(question_id)]
-                # k = question + " " + k + "?"
-                print("chatmodel_dict", chatmodel_dict)
+                k = k[1:]
+                question_id = tq_map[k]
+                question = qid_map[str(question_id)]
+                k = question + " " + k + "?"
                 print(k)
                 Confirm_template = TemplateSendMessage(
                     alt_text='confirm template請使用手機版line',

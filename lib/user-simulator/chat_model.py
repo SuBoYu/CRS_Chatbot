@@ -97,7 +97,7 @@ class chat_model:
         FM_model = cfg.FM_model
 
         if self.mod == 'ear':
-            fp = '../../data/PN-model-ear/model-epoch6'
+            fp = '../../data/PN-model-ear/model-epoch0'
         if self.mod == 'ear':
             INPUT_DIM = len(cfg.tag_map)*2+self.mt+8
         self.PN_model = PolicyNetwork(input_dim=INPUT_DIM, dim1=1500, output_dim=len(cfg.tag_map)+1)
@@ -248,7 +248,7 @@ class chat_model:
 
             self.the_agent.turn_count += 1
 
-        if self.the_agent.turn_count == self.mt:
+        if self.the_agent.turn_count == self.mt: # 改成>的話，mt才是5，但要等Model 那邊重train，agent那邊max_turn < 5-2也要改
             self.the_agent.history_list.append(-2)
             s = "Already meet the max turn of conversation: " + str(self.mt)
 

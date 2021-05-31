@@ -41,10 +41,10 @@ def vectorize(feat, recent_candidate_list):
     assert len(list3) == len(cfg.FACET_POOL)
     assert len(list4) == len(cfg.FACET_POOL)
 
-    MAX_TURN = 15
+    MAX_TURN = 5
     history_list = [1] * min(MAX_TURN-1, len(feat))
     list5 = history_list + [0] * (MAX_TURN - len(history_list))
-    assert len(list5) == 15
+    assert len(list5) == 5
     list6 = [0] * 8
     if len(recent_candidate_list) <= 10:
         list6[0] = 1
@@ -143,7 +143,7 @@ def train(bs, train_list, valid_list, test_list, optimizer, model, criterion, ep
 
         b = []
         a = [item[1] for item in data_batch]
-        s = len(cfg.tag_map)*2+15+8
+        s = len(cfg.tag_map)*2+cfg.MAX_TURN+8
         for f in a:
             feat_set = set(f)
             cand_item = []
@@ -200,8 +200,8 @@ def main():
     if A.mod == 'ear':
         #inputdim = 89
         #inputdim = 8787
-        inputdim = len(cfg.tag_map)*2+15+8
-        with open('../../data/FM-train-data/tag_map.json', 'r') as f:
+        inputdim = len(cfg.tag_map)*2+cfg.MAX_TURN+8
+        with open('../../data/FM-train-data/tag_question_map.json', 'r') as f:
             outputdim = len(json.load(f)) + 1
     else:
         inputdim = 33

@@ -187,7 +187,7 @@ class agent():
         assert len(list3) == len(cfg.FACET_POOL)
         assert len(list4) == len(cfg.FACET_POOL)
 
-        MAX_TURN = 15
+        MAX_TURN = 5
         list5 = self.history_list + [0] * (MAX_TURN - len(self.history_list))
 
         list6 = [0] * 8
@@ -408,22 +408,31 @@ class agent():
             pred = self.PN_model(s)
             # print(pred.detach().numpy())
             for feat in self.asked_feature:
-                pred[cfg.tag_map[feat]] = -999999999
+                pred[cfg.tag_map[feat]] = -math.inf
+
             prob = SoftMax(pred)
             # print(prob.detach().numpy())
             # print(torch.min(prob))
             c = Categorical(prob)
 
-            if cfg.eval == 1:
+            # use max prob
+            if cfg.eval == 1 or cfg.eval == 0:
                 pred_data = pred.data.tolist()
-                # pred_data[-1] = 100
                 sorted_index = sorted(range(len(pred_data)), key=lambda k: pred_data[k], reverse=True)
+                print('Top 5 action: {}'.format(sorted_index[:5]))
+                print('Value of top 5 actions: {}'.format([pred_data[v] for v in sorted_index[:5]]))
+                print('Ranking of recommendation action: {}'.format(sorted_index.index(len(cfg.tag_map))))
+                print('Value of recommendation action: {}'.format(pred_data[len(cfg.tag_map)]))
+
                 unasked_max = None
                 # for item in sorted_index:
                 #     if item <= 7:
                 #         unasked_max = item
                 #         break
-                unasked_max = sorted_index[0]
+                if self.turn_count < 5 - 2:
+                    unasked_max = sorted_index[0]
+                else:
+                    unasked_max = pred.shape[0] - 1
                 action = Variable(torch.tensor([unasked_max], dtype=torch.long))  # make it compatible with torch
             else:
                 # for training of Action stage
