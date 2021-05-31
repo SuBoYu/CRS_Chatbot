@@ -43,7 +43,7 @@ def cuda_(var):
 
 class chat_model:
     def __init__(self, user_name, item_name):
-        self.mt = 15
+        self.mt = 5
         self.playby = "policy"
         # options include:
         # AO: (Ask Only and recommend by probability)
@@ -97,9 +97,9 @@ class chat_model:
         FM_model = cfg.FM_model
 
         if self.mod == 'ear':
-            fp = '../../data/PN-model-ear/model-epoch0'
+            fp = '../../data/PN-model-ear/model-epoch6'
         if self.mod == 'ear':
-            INPUT_DIM = len(cfg.tag_map)*2+15+8
+            INPUT_DIM = len(cfg.tag_map)*2+self.mt+8
         self.PN_model = PolicyNetwork(input_dim=INPUT_DIM, dim1=1500, output_dim=len(cfg.tag_map)+1)
 
         try:
@@ -190,16 +190,25 @@ class chat_model:
         # agent_utterance.message_type: cfg.ASK_FACET, cfg.MAKE_REC
 
         if self.agent_utterance.message_type == cfg.ASK_FACET:
-            s = "Do you like " + str(self.agent_utterance.data['facet']) + "?"
+            s = "D" + str(self.agent_utterance.data['facet'])
 
         elif self.agent_utterance.message_type == cfg.MAKE_REC:
-            s = "recommendation list: "
-            for i, j in enumerate(self.agent_utterance.data["rec_list"]):
-                j = meta_data[r_item_map[int(j)]]["title"]
-                if i != len(self.agent_utterance.data["rec_list"])-1:
-                    s += str(j) + ","
-                else:
-                    s += str(j)
+            s = []
+            s.append("r")
+            k = []
+            for i, j in enumerate(self.agent_utterance.data["rec_list"][:5]):
+                # j = meta_data[r_item_map[int(j)]]["title"]
+                j = str(j)
+                #j = j.split(" ")
+                # if type(j) == list:
+                #     j = j[-3]+" "+j[-2]+" "+j[-1]
+                # # if i != len(self.agent_utterance.data["rec_list"])-1:
+                # if i != 4:
+                #     s += str(i+1)+". "+str(j) + "\n"
+                # else:
+                #     s += str(i+1)+". "+str(j)
+                k.append(j)
+            s.append(k)
 
         self.the_agent.turn_count += 1
 
@@ -217,16 +226,25 @@ class chat_model:
             self.agent_utterance = self.the_agent.response(user_utterance)
 
             if self.agent_utterance.message_type == cfg.ASK_FACET:
-                s = "Do you like " + str(self.agent_utterance.data['facet']) + "?"
+                s = "D" + str(self.agent_utterance.data['facet'])
 
             elif self.agent_utterance.message_type == cfg.MAKE_REC:
-                s = "recommendation list: "
-                for i, j in enumerate(self.agent_utterance.data["rec_list"]):
-                    j = meta_data[r_item_map[int(j)]]["title"]
-                    if i != len(self.agent_utterance.data["rec_list"])-1:
-                        s += str(j) + ","
-                    else:
-                        s += str(j)
+                s = []
+                s.append("r")
+                k = []
+                for i, j in enumerate(self.agent_utterance.data["rec_list"][:5]):
+                    # j = meta_data[r_item_map[int(j)]]["title"]
+                    j = str(j)
+                    # j = j.split(" ")
+                    # if type(j) == list:
+                    #     j = j[-3]+" "+j[-2]+" "+j[-1]
+                    # # if i != len(self.agent_utterance.data["rec_list"])-1:
+                    # if i != 4:
+                    #     s += str(i+1)+". "+str(j) + "\n"
+                    # else:
+                    #     s += str(i+1)+". "+str(j)
+                    k.append(j)
+                s.append(k)
 
             self.the_agent.turn_count += 1
 
