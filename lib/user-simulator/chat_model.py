@@ -248,7 +248,7 @@ class chat_model:
 
             self.the_agent.turn_count += 1
 
-        if self.the_agent.turn_count == self.mt: # 改成>的話，mt才是5，但要等Model 那邊重train，agent那邊max_turn < 5-2也要改
+        if self.the_agent.turn_count >= self.mt: # 改成>的話，mt才是5，但要等Model 那邊重train，agent那邊max_turn < 5-2也要改
             self.the_agent.history_list.append(-2)
             s = "Already meet the max turn of conversation: " + str(self.mt)
 

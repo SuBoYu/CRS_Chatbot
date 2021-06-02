@@ -35,7 +35,7 @@ with open('../../data/{}/item_dict.json'.format(dir), 'r') as f:
     item_dict = json.load(f)
 
 with open('dict5.json') as f:
-    item_image_map = json.load(f)
+    item_image_url_map = json.load(f)
 
 with open('../../data/{}/tag_question_map.json'.format(dir), 'r') as f:
      tq_map = json.load(f)
@@ -44,7 +44,7 @@ with open('../../data/{}/question_id.json'.format(dir), 'r') as f:
     qid_map = json.load(f)
 
 print(len(item_dict))
-print(len(item_image_map))
+print(len(item_image_url_map))
 
 # 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
@@ -95,10 +95,10 @@ def reply(event):
             item = str(user_item_pair[1])
             chatmodel_dict[event.source.user_id] = chat_model.chat_model(user, item)
 
-            if len(item_image_map[item]["name"]) <= 40:
-                real_name = item_image_map[item]["name"]
+            if len(item_image_url_map[item]["name"]) <= 40:
+                real_name = item_image_url_map[item]["name"]
             else:
-                real_name = item_image_map[item]["name"]
+                real_name = item_image_url_map[item]["name"]
                 real_name = real_name.split(" ")
                 if type(real_name) == list:
                     real_name = real_name[-5] + " " + real_name[-4] + " " + real_name[-3] + " " + real_name[-2] + " " + real_name[-1]
@@ -143,7 +143,7 @@ def reply(event):
                 k = k[1:]
                 question_id = tq_map[k]
                 question = qid_map[str(question_id)]
-                k = question + " " + k + "?"
+                k = question + " \"" + k + "\"?"
                 print(k)
                 Confirm_template = TemplateSendMessage(
                     alt_text='confirm template請使用手機版line',
@@ -199,7 +199,7 @@ def reply(event):
                 k = k[1:]
                 question_id = tq_map[k]
                 question = qid_map[str(question_id)]
-                k = question + " " + k + "?"
+                k = question + " \"" + k + "\"?"
                 print(k)
                 Confirm_template = TemplateSendMessage(
                     alt_text='confirm template請使用手機版line',
@@ -223,14 +223,15 @@ def reply(event):
                 print(k)
                 rec_item_id_list = k[1]
                 item_name_list = []
-                item_image_url_list = []
+                item_image_list = []
                 item_des_list = []
+                item_url_list = []
                 for i in rec_item_id_list:
                     print("get-item-info's item id: ", i)
-                    if type(item_image_map[i]["name"]) == list:
-                        name = "".join(item_image_map[i]["name"])
+                    if type(item_image_url_map[i]["name"]) == list:
+                        name = "".join(item_image_url_map[i]["name"])
                     else:
-                        name = item_image_map[i]["name"]
+                        name = item_image_url_map[i]["name"]
                     if len(name) <= 40:
                         item_name_list.append(name)
                     else:
@@ -241,19 +242,24 @@ def reply(event):
                                 name = name.split(" ")
                                 name = name[-4] + " " + name[-3] + " " + name[-2] + " " + name[-1]
                         item_name_list.append(name)
-                    #item_des_list.append(item_image_map[i]["short_description"])
-                    if item_image_map[i]['images'] != None:
-                        diction = json.loads(item_image_map[i]['images'])
+                    #item_des_list.append(item_image_url_map[i]["short_description"])
+                    if item_image_url_map[i]['images'] != None:
+                        diction = json.loads(item_image_url_map[i]['images'])
                         image_list = []
                         for k, v in diction.items():
                             image_list.append([k, v])
-                        item_image_url_list.append(image_list)
+                        item_image_list.append(image_list)
                     else:
                         image_list = [["https://2.bp.blogspot.com/-Ado6ei4W5YU/WY-RnHsRzzI/AAAAAAABoXA/p0AEw7GIMaUgK_-pyrwH4pwBbwGyKRaowCEwYBhgL/s1600/70533052.jpg", None]]
-                        item_image_url_list.append(image_list)
+                        item_image_list.append(image_list)
+
+                    if item_image_url_map[i]['url'] != None:
+                        item_url_list.append(item_image_url_map[i]['url'])
+                    else:
+                        item_url_list.append("https://2.bp.blogspot.com/-Ado6ei4W5YU/WY-RnHsRzzI/AAAAAAABoXA/p0AEw7GIMaUgK_-pyrwH4pwBbwGyKRaowCEwYBhgL/s1600/70533052.jpg")
 
                 print("item_name_list: ", item_name_list)
-                # print("item_image_url_list: ", item_image_url_list)
+                # print("item_image_list: ", item_image_list)
                 # print("item_des_list: ", item_des_list)
 
                 # "recommendation list: "
@@ -277,7 +283,7 @@ def reply(event):
                 col = []
                 for i in range(len(item_name_list)):
                     col.append(CarouselColumn(
-                                thumbnail_image_url=item_image_url_list[i][0][0],
+                                thumbnail_image_url=item_image_list[i][0][0],
                                 title=item_name_list[i],
                                 text=str(i+1),
                                 actions=[
@@ -288,6 +294,10 @@ def reply(event):
                                     MessageTemplateAction(
                                         label='Reject',
                                         text='R',
+                                    ),
+                                    URIAction(
+                                        label='go to the website',
+                                        uri=item_url_list[i]
                                     )
                                 ]
                             ))
